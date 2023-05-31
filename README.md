@@ -1,21 +1,27 @@
-# CricketMatch
+This code simulates a cricket match between two teams, Team A and Team B. The match consists of two innings, where each team takes turns batting and bowling. The outcome of the match is determined based on the scores and wickets taken by each team.
 
-This is a simple cricket match simulation using user input. In my hall, there will be a cricket tournament. I've made this project so that I can calculate all the match results and summaries. Further instruction will be provided along with the code.
+Here's a summary of how the code works:
 
-A sample input is given with this repository. The output is also given in two ways. One is along with input and others are just output.
+1. It defines two classes: `Player`, which is an abstract base class, and two derived classes `Batsman` and `Bowler`. These classes represent players in the cricket match.
 
-Here's a brief summary of how it works:
+2. The `Player` class has common attributes such as name, runs, balls, wickets, and overs. It also defines pure virtual functions for getting the player's role, updating their stats, printing their stats, and getting their name.
 
-1. The code starts by taking input for the names of two teams and their respective players.
+3. The `Batsman` and `Bowler` classes inherit from the `Player` class and provide their specific implementations for the virtual functions.
 
-2. The `Team` class is defined, which holds information about a team, such as player names, runs, wickets, and bowling statistics. It also includes methods for displaying player information, keeping score, playing the match, and summarizing the match.
+4. The code defines a `writeToFile` function that writes the player's stats to a file.
 
-3. The `play` method simulates the batting innings of a team. It asks for the batting and bowling sides, as well as the bowler. It then proceeds to simulate each ball and takes input for the runs scored or other events like getting out, wide balls, or no balls.
+5. It defines a template `swap` function and a `sort` function to sort an array of players.
 
-4. The score is updated accordingly, and the batting and bowling sides are swapped as necessary. The `scoreboard` method is called to display the current score and player statistics.
+6. The main function initializes two arrays, `teamA` and `teamB`, with instances of players. It sets up the initial conditions for the match, such as scores, wickets, overs, and the order of players.
 
-5. The match is played over a specified number of overs, and the match summary is displayed at the end, showing the total runs, wickets, and individual player statistics for both teams.
+7. The code simulates a toss to decide which team bats first. Then, it starts the first innings.
 
-6. Finally, the `result` method determines and displays the result of the match based on the total runs scored by each team.
+8. In each innings, the code simulates overs and balls. For each ball, it randomly generates a run and a wicket. If a wicket falls, the corresponding player is updated, and the batting order is adjusted. If a run is scored, the respective player's stats are updated, and the score is increased. The bowler's stats are also updated.
 
-Note: This code assumes that the user will input the necessary values correctly and follows the specified instructions for inputting runs and other events during the match simulation.
+9. After the first innings, the code prints the score and wickets for the batting team.
+
+10. If there is a second innings (when the second team is batting), the code simulates it in a similar manner.
+
+11. Finally, the code determines the result of the match based on the scores. It sorts the players based on their runs and outputs the top scorers from each team. The stats of all players are written to a file.
+
+In summary, this code simulates a cricket match by generating random runs and wickets for each ball. It keeps track of the players' stats and determines the winner based on the scores.
