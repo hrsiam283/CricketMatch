@@ -1,353 +1,364 @@
+
 #include <bits/stdc++.h>
 using namespace std;
-vector<string> Batsman;
-class Team
+
+class Player
 {
 protected:
-    int visforthisTeam[11] = {0};
-    int overcount[11] = {0};
-    int wicketcount[11] = {0};
-    string teamName;
-    int totalRun = 0;
-    int run[11] = {0};
-    int ballconsumed[11] = {0};
-    string playersName[11];
-    int wicket = 0;
-    int battingside = -1, otherside = -1;
-    int bowler = -1;
-    int runOfbowler[11] = {0};
+    string name;
+    int runs, balls, wickets, overs;
 
 public:
-    Team(string name, string s[])
+    Player(string n)
     {
-        teamName = name;
-        for (int i = 0; i < 11; i++)
-        {
-            playersName[i] = s[i];
-        }
+        name = n, runs = 0, balls = 0, wickets = 0, overs = 0;
     }
-    void display()
+
+    virtual string getRole() = 0;
+    virtual void updateStats(int r, int w) = 0;
+    virtual void printStats() = 0;
+    virtual string Name() = 0;
+
+    bool operator>(Player &p)
     {
-        cout << "Name\t"
-             << "Status\t" << endl;
-        for (int i = 0; i < 11; i++)
-        {
-            if (i == battingside || i == otherside)
-                continue;
-            cout << i << '.' << playersName[i] << '\t';
-
-            if (visforthisTeam[i])
-                cout << "Out" << endl;
-            else
-                cout << "Not Out" << endl;
-        }
+        return runs > p.runs;
     }
-    void display2(Team &b)
-    {
-        cout << "Name\t"
-             << "Over\t"
-             << "Wicket\t" << endl;
-        for (int i = 0; i < 11; i++)
-        {
-            if (i == bowler)
-                continue;
-            cout << i << '.' << b.playersName[i] << '\t' << overcount[i] << '\t' << wicketcount[i] << endl;
-        }
-    }
-    void scoreboard(Team &b, int balls, int battingside, int otherside, int bowler)
-    {
-
-        cout << "BATTING\t" << '\t' << "BOLLING" << endl;
-        for (int i = 0; i < 3; i++)
-            cout << b.teamName[i];
-        cout << 'V';
-        for (int i = 0; i < 3; i++)
-        {
-            cout << teamName[i];
-        }
-        cout << ": " << totalRun << '/' << wicket << '\t';
-        cout << "Over: " << balls / 6 << '.' << balls % 6 << endl;
-        cout << playersName[battingside] << '*' << run[battingside] << '(' << ballconsumed[battingside] << ')' << '\t';
-        cout << b.playersName[bowler] << ' ' << overcount[bowler] << "." << balls % 6 << '/' << runOfbowler[bowler] << '/' << wicketcount[bowler] << endl;
-
-        cout << playersName[otherside] << ' ' << run[otherside] << '(' << ballconsumed[otherside] << ')' << endl;
-    }
-    void play(Team &b, int over)
-    {
-        cout << teamName << " will bat" << endl;
-
-        cout << "Who is in the battingside and the otherside batsman?" << endl;
-        display();
-
-        cin >> battingside >> otherside;
-
-        int balls = 0;
-        while (over--)
-        {
-            cout << "Who is the bowler?" << endl;
-            display2(b);
-
-            cin >> bowler;
-
-            for (int i = 0; i < 6; i++)
-            {
-                scoreboard(b, balls, battingside, otherside, bowler);
-                balls++;
-                string s;
-                cin >> s;
-                if (s == "1")
-                {
-                    totalRun++;
-                    run[battingside]++;
-                    ballconsumed[battingside]++;
-                    swap(battingside, otherside);
-                    runOfbowler[bowler] += 1;
-                }
-                else if (s == "2")
-                {
-                    totalRun += 2;
-                    run[battingside] += 2;
-                    ballconsumed[battingside]++;
-                    runOfbowler[bowler] += 2;
-                }
-                else if (s == "3")
-                {
-                    totalRun += 3;
-                    run[battingside] += 3;
-                    swap(battingside, otherside);
-                    ballconsumed[battingside]++;
-                    runOfbowler[bowler] += 3;
-                }
-                else if (s == "4")
-                {
-                    totalRun += 4;
-                    run[battingside] += 4;
-                    ballconsumed[battingside]++;
-                    runOfbowler[bowler] += 4;
-                }
-                else if (s == "5")
-                {
-                    totalRun += 5;
-                    run[battingside] += 4;
-                    ballconsumed[battingside]++;
-                    runOfbowler[bowler] += 5;
-                }
-                else if (s == "6")
-                {
-                    totalRun += 6;
-                    run[battingside] += 6;
-                    ballconsumed[battingside]++;
-                    runOfbowler[bowler] += 6;
-                }
-                else if (s == "out")
-                {
-                    cout << "Who? 0->battingside" << endl;
-                    cout << "1->otherside" << endl;
-                    bool flag = 0;
-                    cin >> flag;
-                    if (flag == 0)
-                    {
-                        cout << playersName[battingside] << endl;
-                        cout << "Total Runs of this player" << ' ' << run[battingside] << '(' << ballconsumed[battingside] << ")" << endl;
-                        visforthisTeam[battingside] = 1;
-                        cout << "Who is new Player\n";
-                        display();
-                        cin >> battingside;
-                        wicket++;
-                        wicketcount[bowler]++;
-                    }
-                    else
-                    {
-                        cout << playersName[otherside] << endl;
-                        cout << "Total Runs of this player" << ' ' << run[otherside] << '(' << ballconsumed[otherside] << ")" << endl;
-                        visforthisTeam[otherside] = 1;
-                        cout << "Who is new Player\n";
-                        display();
-                        cin >> otherside;
-                        wicket++;
-                        wicketcount[bowler]++;
-                    }
-                }
-                else if (s == "no" || s == "wide")
-                {
-                    totalRun++;
-                    runOfbowler[bowler]++;
-                    cout << "Any other run? If 'Yes', How much? else '0'" << endl;
-                    int x;
-                    cin >> x;
-                    runOfbowler[bowler] += x;
-                    totalRun += x;
-                    run[battingside] += x;
-                    i--;
-                    if (x % 2 == 1)
-                        swap(battingside, otherside);
-                    balls--;
-                }
-
-                if (i == 5)
-                {
-                    swap(battingside, otherside);
-                }
-            }
-            overcount[bowler]++;
-            scoreboard(b, balls, battingside, otherside, bowler);
-        }
-    }
-    void matchsummery(Team &b)
-    {
-        cout << teamName << ':' << totalRun << '/' << wicket << endl;
-        cout << "Name\t"
-             << "Run\t"
-             << "Balls\t"
-             << "Status\t" << endl;
-
-        for (int i = 0; i < 11; i++)
-        {
-            cout << playersName[i] << '\t' << run[i] << '\t';
-            if (visforthisTeam[i])
-            {
-                cout << ballconsumed[i] << '\t' << "Out" << endl;
-            }
-            else
-                cout << ballconsumed[i] << '\t' << "Not Out" << endl;
-        }
-        cout << endl
-             << endl
-             << endl;
-        cout << b.teamName << endl;
-        cout << "Name\t"
-             << "Over\t"
-             << "Run\t"
-             << "Wicket\t" << endl;
-
-        for (int i = 0; i < 11; i++)
-        {
-            cout << b.playersName[i] << '\t' << overcount[i] << '\t' << runOfbowler[i] << '\t' << wicketcount[i] << endl;
-        }
-    }
-    void result(Team &b)
-    {
-        if (totalRun > b.totalRun)
-        {
-            cout << teamName << " is won! by " << 10 - wicket << " wiket(s)" << endl;
-        }
-        else if (totalRun < b.totalRun)
-        {
-            cout << b.teamName << " is won! by " << b.totalRun - totalRun << " run(s)" << endl;
-        }
-        else
-            cout << "The match is draw" << endl;
-    }
+    friend void writeToFile(ofstream &file, Player *p);
+    int Run() { return runs; }
 };
 
-class PlyersProfile : public Team
+class Batsman : public Player
 {
-protected:
-    string type;
-    int totalrun;
-    int totalwicket;
-
 public:
-    void display(int i)
+    Batsman(string n) : Player(n) {}
+    string getRole() { return "Batsman"; }
+    void updateStats(int r, int w)
     {
-        cout << "Name : " << playersName[i - 1] << endl;
-        cout << "Type : " << type << endl;
-        cout << "Total Run : " << totalrun << endl;
-        cout << "Totalwicket : " << totalwicket << endl;
+        runs += r;
+        balls++;
+    }
+    void printStats()
+    {
+        cout << name << " (" << getRole() << "): " << runs << " runs in " << balls << " balls\n";
+    }
+    string Name()
+    {
+        return name;
     }
 };
-
+class Bowler : public Player
+{
+public:
+    Bowler(string n) : Player(n) {}
+    string getRole() { return "Bowler"; }
+    void updateStats(int r, int w)
+    {
+        runs += r;
+        wickets += w;
+        balls++;
+        if (balls % 6 == 0)
+        {
+            overs++;
+        }
+    }
+    void printStats()
+    {
+        cout << name << " (" << getRole() << "): " << wickets << " wickets in " << overs << "." << balls % 6 << " overs, " << runs << " runs\n";
+    }
+    string Name()
+    {
+        return name;
+    }
+};
+void writeToFile(ofstream &file, Player *p)
+{
+    file << p->Name() << " (" << p->getRole() << "): ";
+    if (p->getRole() == "Batsman")
+    {
+        file << p->runs << " runs in " << p->balls << " balls\n";
+    }
+    else if (p->getRole() == "Bowler")
+    {
+        file << p->wickets << " wickets in " << p->overs << "." << p->balls % 6 << " overs, " << p->runs << " runs\n";
+    }
+}
+template <typename T>
+void swap(T arr[], int i, int j)
+{
+    T temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+}
+template <typename T>
+void sort(T arr[], int size)
+{
+    for (int i = 0; i < size - 1; i++)
+    {
+        for (int j = 0; j < size - i - 1; j++)
+        {
+            if (arr[j] < arr[j + 1])
+            {
+                swap(arr, j, j + 1);
+            }
+        }
+    }
+}
+const int N = 11;
 int main()
 {
-
-    // int n;
-    // cout << "How many over?" << endl;
-    // cin >> n;
-    // string t[] = {"Tamim", "Liton", "sakib", "Mush", "Joy", "Musta", "Rubel", "Miraz", "Ebad", "Mash", "Raz"};
-    // string u[] = {"Rohit", "Virat", "Surya", "Dhoni", "KL", "Hardik", "Singh", "Shami", "Harb", "Ji", "Acch"};
-    // Team a("Bangladesh", t), b("India", u);
-    cout << " BANGABANDHU HALL TOURNAMENT 2023 " << endl;
-    cout << endl;
-    cout << endl;
-    cout << "Notice: In this program almost input will be taken by porper direction." << endl;
-    cout << "However, may be at some place it is a input section without any direction." << endl;
-    cout << "This is this section where you have to give input of runs in a ball. 1,2,3,4,5 or 6 can be an input." << endl;
-    cout << "However some situation can be happened like out ball, wide ball, no ball, extra run." << endl;
-    cout << "If this is the case, you should give input as 'out', 'no', 'wide'. Further instruction will be given.\n"
-         << endl;
-
-    string nameofteam[2];
-    cout << "Name of Team I" << endl;
-    cin >> nameofteam[0];
-    cout << "Name of 11 players in Team " << nameofteam[0] << endl;
-    string teamA[11];
-    for (int i = 0; i < 11; i++)
+    Player *teamA[N];
+    Player *teamB[N];
+    teamA[0] = new Batsman("Rohit Sharma");
+    teamA[1] = new Batsman("Shikhar Dhawan");
+    teamA[2] = new Batsman("Virat Kohli");
+    teamA[3] = new Batsman("Suryakumar Yadav");
+    teamA[4] = new Batsman("Rishabh Pant");
+    teamA[5] = new Batsman("Hardik Pandya");
+    teamA[6] = new Bowler("Ravindra Jadeja");
+    teamA[7] = new Bowler("Bhuvneshwar Kumar");
+    teamA[8] = new Bowler("Mohammed Shami");
+    teamA[9] = new Bowler("Jasprit Bumrah");
+    teamA[10] = new Bowler("Yuzvendra Chahal");
+    teamB[0] = new Batsman("Jason Roy");
+    teamB[1] = new Batsman("Jonny Bairstow");
+    teamB[2] = new Batsman("Joe Root");
+    teamB[3] = new Batsman("Eoin Morgan");
+    teamB[4] = new Batsman("Jos Buttler");
+    teamB[5] = new Batsman("Ben Stokes");
+    teamB[6] = new Bowler("Chris Woakes");
+    teamB[7] = new Bowler("Sam Curran");
+    teamB[8] = new Bowler("Adil Rashid");
+    teamB[9] = new Bowler("Jofra Archer");
+    teamB[10] = new Bowler("Mark Wood");
+    int scoreA = 0, scoreB = 0, wicketsA = 0, wicketsB = 0, oversA = 0, oversB = 0, strikerA = 0, nonStrikerA = 1, strikerB = 0, nonStrikerB = 1, bowlerB = 6, bowlerA = 6, ballsPerOver = 6, oversPerInnings = 10;
+    bool isTeamABattingFirst = true;
+    cout << "Tossing a coin...0/1\n";
+    int toss = rand() % 2;
+    // cin >> toss;
+    if (toss == 0)
     {
-        cin >> teamA[i];
-    }
-    cout << "Name of Team II" << endl;
-    cin >> nameofteam[1];
-    cout << "Name of 11 players in Team " << nameofteam[1] << endl;
-    string teamB[11];
-    for (int i = 0; i < 11; i++)
-    {
-        cin >> teamB[i];
-    }
-    cout << "Who will play first?" << endl;
-    for (int i = 0; i < 2; i++)
-        cout << i << ' ' << nameofteam[i] << ' ' << endl;
-    int x;
-    cin >> x;
-    if (x == 0)
-    {
-        int over;
-
-        cout << "How many Over\n";
-        cin >> over;
-        Team a(nameofteam[0], teamA), b(nameofteam[1], teamB);
-        cout << "At First ";
-        a.play(b, over);
-
-        cout << endl
-             << endl
-             << endl;
-        a.matchsummery(b);
-
-        cout << endl
-             << endl
-             << endl;
-        cout << "First Half is over. Now ";
-        b.play(a, over);
-        cout << endl
-             << endl
-             << endl;
-        b.matchsummery(a);
-        a.result(b);
+        cout << "Team A wins the toss and chooses to bat first.\n";
+        isTeamABattingFirst = true;
     }
     else
     {
-        int over;
-
-        cout << "How many Over\n";
-        cin >> over;
-        Team a(nameofteam[1], teamB), b(nameofteam[0], teamA);
-        cout << "At First ";
-        a.play(b, over);
-
-        cout << endl
-             << endl
-             << endl;
-        a.matchsummery(b);
-
-        cout << endl
-             << endl
-             << endl;
-        cout << "First Half is over. Now ";
-        b.play(a, over);
-        cout << endl
-             << endl
-             << endl;
-        b.matchsummery(a);
-        a.result(b);
+        cout << "Team B wins the toss and chooses to bat first.\n";
+        isTeamABattingFirst = false;
     }
+    cout << "Starting the first innings...\n";
+    if (isTeamABattingFirst)
+    {
+        while (oversA < oversPerInnings && wicketsA < N - 1)
+        {
+            cout << "Over " << oversA + 1 << ":\n";
+            for (int i = 0; i < ballsPerOver; i++)
+            {
+
+                int run = rand() % 7;
+                int wicket = rand() % 10;
+                // cout<<"Run 0-6"<<endl;
+                // cout << "wicket 0-1" << endl;
+                // cin>>run;
+                // cin>>wicket;
+
+                if (wicket == 0)
+                {
+                    cout << teamA[strikerA]->Name() << " is out!\n";
+                    teamA[strikerA]->updateStats(run, 0);
+                    teamB[bowlerB]->updateStats(run, 1);
+                    wicketsA++;
+                    if (wicketsA == N - 1)
+                    {
+                        break;
+                    }
+                    strikerA = wicketsA + 1;
+                }
+                else
+                {
+                    cout << teamA[strikerA]->Name() << " scores " << run << " run(s)\n";
+                    teamA[strikerA]->updateStats(run, 0);
+                    teamB[bowlerB]->updateStats(run, 0);
+                    scoreA += run;
+                    if (run % 2 == 1)
+                    {
+                        swap(teamA, strikerA, nonStrikerA);
+                    }
+                }
+            }
+            oversA++;
+            swap(teamA, strikerA, nonStrikerA);
+            bowlerB = (bowlerB + 1) % N;
+        }
+        cout << "End of first innings. Team A scored " << scoreA << "/" << wicketsA << " in " << oversA << " overs.\n";
+    }
+    else
+    {
+        while (oversB < oversPerInnings && wicketsB < N - 1)
+        {
+            cout << "Over " << oversB + 1 << ":\n";
+            for (int i = 0; i < ballsPerOver; i++)
+            {
+                int run = rand() % 7;
+                int wicket = rand() % 10;
+                // cout<<"Run 0-6"<<endl;
+                // cout << "wicket 0-1" << endl;
+                // cin>>run;
+                // cin>>wicket;
+                if (wicket == 0)
+                {
+                    cout << teamB[strikerB]->Name() << " is out!\n";
+                    teamB[strikerB]->updateStats(run, 0);
+                    teamA[bowlerA]->updateStats(run, 1);
+                    wicketsB++;
+                    if (wicketsB == N - 1)
+                    {
+                        break;
+                    }
+                    strikerB = wicketsB + 1;
+                }
+                else
+                {
+                    cout << teamB[strikerB]->Name() << " scores " << run << " run(s)\n";
+                    teamB[strikerB]->updateStats(run, 0);
+                    teamA[bowlerA]->updateStats(run, 0);
+                    scoreB += run;
+                    if (run % 2 == 1)
+                    {
+                        swap(teamB, strikerB, nonStrikerB);
+                    }
+                }
+            }
+            oversB++;
+            swap(teamB, strikerB, nonStrikerB);
+            bowlerA = (bowlerA + 1) % N;
+        }
+        cout << "End of first innings. Team B scored " << scoreB << "/" << wicketsB << " in " << oversB << " overs.\n";
+    }
+    cout << "Starting the second innings...\n";
+    if (isTeamABattingFirst)
+    {
+        while (oversB < oversPerInnings && wicketsB < N - 1 && scoreB <= scoreA)
+        {
+            cout << "Over " << oversB + 1 << ":\n";
+            for (int i = 0; i < ballsPerOver; i++)
+            {
+                int run = rand() % 7;
+                int wicket = rand() % 10;
+                // cout<<"Run 0-6"<<endl;
+                // cout << "wicket 0-1" << endl;
+                // cin>>run;
+                // cin>>wicket;
+                if (wicket == 0)
+                {
+                    cout << teamB[strikerB]->Name() << " is out!\n";
+                    teamB[strikerB]->updateStats(run, 0);
+                    teamA[bowlerA]->updateStats(run, 1);
+                    wicketsB++;
+                    if (wicketsB == N - 1)
+                    {
+                        break;
+                    }
+                    strikerB = wicketsB + 1;
+                }
+                else
+                {
+                    cout << teamB[strikerB]->Name() << " scores " << run << " run(s)\n";
+                    teamB[strikerB]->updateStats(run, 0);
+                    teamA[bowlerA]->updateStats(run, 0);
+                    scoreB += run;
+                    if (run % 2 == 1)
+                    {
+                        swap(teamB, strikerB, nonStrikerB);
+                    }
+                    if (scoreB > scoreA)
+                    {
+                        break;
+                    }
+                }
+            }
+            oversB++;
+            swap(teamB, strikerB, nonStrikerB);
+            bowlerA = (bowlerA + 1) % N;
+        }
+        cout << "End of second innings. Team B scored " << scoreB << "/" << wicketsB << " in " << oversB << " overs.\n";
+    }
+    else
+    {
+        while (oversA < oversPerInnings && wicketsA < N - 1 && scoreA <= scoreB)
+        {
+            cout << "Over " << oversA + 1 << ":\n";
+            for (int i = 0; i < ballsPerOver; i++)
+            {
+                int run = rand() % 7;
+                int wicket = rand() % 10;
+                // cout<<"Run 0-6"<<endl;
+                // cout << "wicket 0-1" << endl;
+                // cin>>run;
+                // cin>>wicket;
+                if (wicket == 0)
+                {
+                    cout << teamA[strikerA]->Name() << " is out!\n";
+                    teamA[strikerA]->updateStats(run, 0);
+                    teamB[bowlerB]->updateStats(run, 1);
+                    wicketsA++;
+                    if (wicketsA == N - 1)
+                    {
+                        break;
+                    }
+                    strikerA = wicketsA + 1;
+                }
+                else
+                {
+                    cout << teamA[strikerA]->Name() << " scores " << run << " run(s)\n";
+                    teamA[strikerA]->updateStats(run, 0);
+                    teamB[bowlerB]->updateStats(run, 0);
+                    scoreA += run;
+                    if (run % 2 == 1)
+                    {
+                        swap(teamA, strikerA, nonStrikerA);
+                    }
+                    if (scoreA > scoreB)
+                    {
+                        break;
+                    }
+                }
+            }
+            oversA++;
+            swap(teamA, strikerA, nonStrikerA);
+            bowlerB = (bowlerB + 1) % N;
+        }
+        cout << "End of second innings. Team A scored " << scoreA << "/" << wicketsA << " in " << oversA << " overs.\n";
+    }
+
+    cout << "Result: ";
+    if (scoreA > scoreB)
+    {
+        cout << "Team A wins by " << N - 1 - wicketsA << " wicket(s)\n";
+    }
+    else if (scoreB > scoreA)
+    {
+        cout << "Team B wins by " << N - 1 - wicketsB << " wicket(s)\n";
+    }
+    else
+    {
+        cout << "It is a tie\n";
+    }
+    sort(teamA, N);
+    sort(teamB, N);
+    cout << "Top scorer from team A: " << teamA[0]->Name() << " with " << teamA[0]->Run() << " runs\n";
+    cout << "Top scorer from team B: " << teamB[0]->Name() << " with " << teamB[0]->Run() << " runs\n";
+    ofstream file;
+    file.open("stats.txt");
+    file << "Team A:\n";
+    for (int i = 0; i < N; i++)
+    {
+        writeToFile(file, teamA[i]);
+    }
+    file << "\nTeam B:\n";
+    for (int i = 0; i < N; i++)
+    {
+        writeToFile(file, teamB[i]);
+    }
+    file.close();
+    return 0;
 }
